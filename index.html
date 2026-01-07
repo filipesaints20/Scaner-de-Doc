@@ -9,29 +9,37 @@
     <style>
         :root { --blue: #0f2a44; --green: #27ae60; --amber: #f39c12; --bg: #f8fafc; --white: #ffffff; }
         body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--blue); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; }
-        .app { width: 100%; max-width: 420px; background: var(--white); border-radius: 30px; padding: 35px 25px; box-shadow: 0 15px 35px rgba(15, 42, 68, 0.1); text-align: center; box-sizing: border-box; }
-        .logo { width: 100px; margin-bottom: 20px; }
-        h1 { font-size: 1.4rem; margin: 0 0 10px 0; font-weight: 800; }
-        .subtitle { font-size: 0.9rem; color: #64748b; margin-bottom: 25px; }
-        .progress-wrapper { margin-bottom: 25px; display: none; }
-        .progress-info { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; }
+        .app { width: 100%; max-width: 420px; background: var(--white); border-radius: 30px; padding: 30px 20px; box-shadow: 0 15px 35px rgba(15, 42, 68, 0.1); text-align: center; box-sizing: border-box; }
+        .logo { width: 90px; margin-bottom: 15px; }
+        h1 { font-size: 1.3rem; margin: 0 0 10px 0; font-weight: 800; }
+        .subtitle { font-size: 0.85rem; color: #64748b; margin-bottom: 20px; }
+        
+        .progress-wrapper { margin-bottom: 20px; display: none; }
+        .progress-info { display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 700; margin-bottom: 5px; }
         .progress-container { width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--blue); width: 0%; transition: width 0.4s ease; }
-        .status-card { background: #f1f5f9; padding: 18px; border-radius: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
-        #statusLabel { font-weight: 800; font-size: 1rem; display: block; }
-        #instructionLabel { font-size: 0.85rem; color: #64748b; margin-top: 5px; }
-        input { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 15px; font-size: 1rem; margin-bottom: 12px; outline: none; box-sizing: border-box; }
-        .camera-container { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 25px; overflow: hidden; display: none; margin-bottom: 20px; }
+
+        .status-card { background: #f1f5f9; padding: 15px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        #statusLabel { font-weight: 800; font-size: 0.95rem; display: block; }
+        #instructionLabel { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+
+        input[type="text"] { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.95rem; margin-bottom: 10px; outline: none; box-sizing: border-box; }
+
+        .camera-container { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 20px; overflow: hidden; margin-bottom: 15px; }
         video { width: 100%; height: 100%; object-fit: cover; }
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 2px solid #fff; z-index: 10; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); pointer-events: none; }
         .rect { width: 85%; height: 60%; border-radius: 15px; }
         .circle { width: 75%; height: 55%; border-radius: 50%; }
-        .summary-list { text-align: left; margin-top: 15px; max-height: 250px; overflow-y: auto; border: 1px solid #eee; border-radius: 15px; padding: 10px; }
-        .summary-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 0.8rem; }
-        button { width: 100%; padding: 16px; border: none; border-radius: 16px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        #btnUploadGaleria { position: absolute; bottom: 12px; right: 12px; width: 45px; height: 45px; border-radius: 50%; background: var(--white); color: var(--blue); border: none; font-size: 1.1rem; cursor: pointer; z-index: 20; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+        .summary-list { text-align: left; margin-top: 10px; max-height: 280px; overflow-y: auto; border: 1px solid #eee; border-radius: 15px; padding: 5px; }
+        .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 0.75rem; }
+        .btn-edit { background: #e2e8f0; color: var(--blue); padding: 5px 10px; border-radius: 6px; font-size: 0.65rem; border: none; cursor: pointer; font-weight: 700; }
+
+        button.main-btn { width: 100%; padding: 15px; border: none; border-radius: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary { background: var(--blue); color: #fff; }
-        .btn-skip { background: transparent; color: #94a3b8; font-size: 0.8rem; margin-top: 10px; }
-        .btn-reset { background: #fee2e2; color: #ef4444; margin-top: 10px; font-size: 0.85rem; }
+        .btn-skip { background: transparent; color: #94a3b8; font-size: 0.75rem; margin-top: 8px; border: none; cursor: pointer; width: 100%; }
         .hidden { display: none; }
         .mirror { transform: scaleX(-1); }
     </style>
@@ -40,9 +48,8 @@
 
 <div class="app">
     <img src="https://effico.com.br/wp-content/uploads/2022/06/Sem-Titulo-7123.png" class="logo">
-    <h1 id="mainTitle">Admissão Digital</h1>
-    <p class="subtitle" id="mainSubtitle">Envio seguro de documentos</p>
-
+    <h1>Admissão Digital</h1>
+    
     <div class="progress-wrapper" id="progressWrapper">
         <div class="progress-info"><span>Progresso</span><span id="progressPercent">0%</span></div>
         <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
@@ -54,56 +61,60 @@
     </div>
 
     <div id="lgpdSection">
-        <div style="font-size: 0.8rem; color: #475569; text-align: left; background: #fffbeb; padding: 15px; border-radius: 15px; margin-bottom: 20px; line-height: 1.4;">
-            Autorizo a <b>EFFICO</b> a coletar estas imagens para fins exclusivos de admissão e registro profissional.
+        <div style="font-size: 0.75rem; color: #475569; text-align: left; background: #fffbeb; padding: 12px; border-radius: 12px; margin-bottom: 15px;">
+            A <b>EFFICO</b> solicita acesso aos seus documentos para fins de contratação.
         </div>
-        <button class="btn-primary" onclick="irParaCadastro()">Concordar e Iniciar</button>
+        <button class="main-btn btn-primary" onclick="irParaCadastro()">Concordar e Iniciar</button>
     </div>
 
     <div id="setupSection" class="hidden">
         <input type="text" id="nome" placeholder="Nome Completo">
         <input type="text" id="funcao" placeholder="Função">
-        <button class="btn-primary" onclick="iniciarCaptura()">Próximo <i class="fas fa-chevron-right"></i></button>
+        <button class="main-btn btn-primary" onclick="iniciarCaptura()">Começar</button>
     </div>
 
     <div id="cameraSection" class="hidden">
-        <div class="camera-container" id="cameraBox" style="display: block;">
+        <div class="camera-container">
             <video id="video" autoplay playsinline></video>
             <div id="overlay" class="overlay rect"></div>
+            <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="processarArquivo(event)">
+            <button id="btnUploadGaleria" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-paperclip"></i>
+            </button>
         </div>
-        <button class="btn-primary" onclick="tirarFoto()"><i class="fas fa-camera"></i> Capturar</button>
+        <button class="main-btn btn-primary" onclick="tirarFoto()"><i class="fas fa-camera"></i> Capturar</button>
         <button class="btn-skip" onclick="pularDocumento()">Não possuo este documento</button>
     </div>
 
     <div id="summarySection" class="hidden">
         <div class="summary-list" id="summaryList"></div>
-        <button class="btn-primary" style="margin-top: 20px;" id="btnFinalizar" onclick="enviarTudo()">
-            <i class="fas fa-paper-plane"></i> Confirmar e Enviar
+        <button class="main-btn btn-primary" style="margin-top: 15px;" id="btnFinalizar" onclick="enviarTudo()">
+            <i class="fas fa-paper-plane"></i> Finalizar e Enviar
         </button>
-        <button class="btn-reset" onclick="location.reload()">Refazer tudo</button>
+        <button class="btn-skip" onclick="location.reload()" style="color: #ef4444;">Reiniciar Processo</button>
     </div>
 </div>
 
 <script>
     const etapas = [
-        { label: "Foto Selfie", hint: "Centralize seu rosto", key: "Selfie", isFace: true },
-        { label: "CTPS", hint: "Página da foto e dados", key: "CTPS", isFace: false },
-        { label: "CPF", hint: "Documento original", key: "CPF", isFace: false },
-        { label: "RG", hint: "Frente e Verso", key: "RG", isFace: false },
-        { label: "PIS", hint: "Cartão Cidadão ou extrato", key: "PIS", isFace: false },
-        { label: "CNH", hint: "Cópia da CNH (se houver)", key: "CNH", isFace: false },
-        { label: "Reservista", hint: "Certificado militar", key: "Reservista", isFace: false },
-        { label: "Comprovante Endereço", hint: "Conta de luz/água recente", key: "Endereco", isFace: false },
-        { label: "Vale Transporte", hint: "Cartão ou formulário", key: "VT", isFace: false },
-        { label: "Certidão Civil", hint: "Nascimento ou Casamento", key: "Certidao_Civil", isFace: false },
-        { label: "CPF Cônjuge", hint: "Se aplicável", key: "CPF_Conjuge", isFace: false },
-        { label: "Doc Filhos", hint: "RG ou Nasc. dos filhos", key: "Doc_Filhos", isFace: false },
-        { label: "Vacina Filhos", hint: "Caderneta de vacinação", key: "Vacina_Filhos", isFace: false },
-        { label: "CPF Filhos", hint: "Se aplicável", key: "CPF_Filhos", isFace: false },
-        { label: "Vacina Saúde", hint: "Hepatite B / Tétano", key: "Vacina_Saude", isFace: false },
-        { label: "Vacina Covid", hint: "Comprovante de vacinação", key: "Vacina_Covid", isFace: false },
-        { label: "Conta Itaú", hint: "Cartão ou Extrato", key: "Conta_Itau", isFace: false },
-        { label: "Escolaridade", hint: "Diploma ou Declaração", key: "Escolaridade", isFace: false }
+        { label: "1. Foto Selfie", hint: "Centralize seu rosto", key: "01_Selfie", isFace: true },
+        { label: "2. CTPS", hint: "Página da foto e dados", key: "02_CTPS", isFace: false },
+        { label: "3. CPF", hint: "Documento original", key: "03_CPF", isFace: false },
+        { label: "4. RG", hint: "Frente e Verso", key: "04_RG", isFace: false },
+        { label: "5. PIS", hint: "Cartão Cidadão ou extrato", key: "05_PIS", isFace: false },
+        { label: "6. CNH", hint: "Cópia da CNH (se houver)", key: "06_CNH", isFace: false },
+        { label: "7. Reservista", hint: "Certificado militar", key: "07_Reservista", isFace: false },
+        { label: "8. Comprovante Residência", hint: "Conta recente (luz/água)", key: "08_Endereco", isFace: false },
+        { label: "9. Vale Transporte", hint: "Cartão ou formulário", key: "09_VT", isFace: false },
+        { label: "10. Certidão Civil", hint: "Nascimento ou Casamento", key: "10_Certidao_Civil", isFace: false },
+        { label: "11. CPF Cônjuge", hint: "Se aplicável", key: "11_CPF_Conjuge", isFace: false },
+        { label: "12. Doc Filhos", hint: "RG ou Nasc. dos filhos", key: "12_Doc_Filhos", isFace: false },
+        { label: "13. Vacina Filhos", hint: "Caderneta de vacinação", key: "13_Vacina_Filhos", isFace: false },
+        { label: "14. CPF Filhos", hint: "Se aplicável", key: "14_CPF_Filhos", isFace: false },
+        { label: "15. Vacina Saúde", hint: "Hepatite B / Tétano", key: "15_Vacina_Saude", isFace: false },
+        { label: "16. Vacina Covid", hint: "Comprovante de vacinação", key: "16_Vacina_Covid", isFace: false },
+        { label: "17. Conta Itaú", hint: "Cartão ou Extrato", key: "17_Conta_Itau", isFace: false },
+        { label: "18. Escolaridade", hint: "Diploma ou Declaração", key: "18_Escolaridade", isFace: false }
     ];
 
     let currentIdx = 0, fotos = {}, stream = null;
@@ -115,7 +126,7 @@
     }
 
     function iniciarCaptura() {
-        if(!document.getElementById("nome").value || !document.getElementById("funcao").value) return alert("Preencha Nome e Função.");
+        if(!document.getElementById("nome").value) return alert("Preencha seu nome.");
         document.getElementById("setupSection").classList.add("hidden");
         document.getElementById("cameraSection").classList.remove("hidden");
         document.getElementById("progressWrapper").style.display = "block";
@@ -127,79 +138,101 @@
         const config = etapas[currentIdx];
         document.getElementById("statusLabel").innerText = config.label;
         document.getElementById("instructionLabel").innerText = config.hint;
+        
         const pct = Math.round((currentIdx / etapas.length) * 100);
         document.getElementById("progressBar").style.width = pct + "%";
         document.getElementById("progressPercent").innerText = pct + "%";
+        
         document.getElementById("overlay").className = config.isFace ? "overlay circle" : "overlay rect";
         document.getElementById("video").classList.toggle("mirror", config.isFace);
+
         if(stream) stream.getTracks().forEach(t => t.stop());
         try {
             stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: config.isFace ? "user" : "environment" } });
             document.getElementById("video").srcObject = stream;
-        } catch(e) { alert("Câmera não disponível."); }
+        } catch(e) { alert("Erro ao acessar câmera."); }
     }
 
     function tirarFoto() {
         const video = document.getElementById("video");
         const c = document.createElement("canvas");
-        const s = 800 / Math.max(video.videoWidth, video.videoHeight); // Reduzindo para 800px para garantir envio
+        const s = 800 / Math.max(video.videoWidth, video.videoHeight);
         c.width = video.videoWidth * s; c.height = video.videoHeight * s;
         const ctx = c.getContext("2d");
         if (etapas[currentIdx].isFace) { ctx.translate(c.width, 0); ctx.scale(-1, 1); }
         ctx.drawImage(video, 0, 0, c.width, c.height);
-        fotos[etapas[currentIdx].key] = c.toDataURL("image/jpeg", 0.6); // Qualidade 0.6 para ser leve
-        currentIdx++; carregarEtapa();
+        fotos[etapas[currentIdx].key] = c.toDataURL("image/jpeg", 0.6);
+        proximo();
+    }
+
+    function processarArquivo(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (f) => {
+            fotos[etapas[currentIdx].key] = f.target.result;
+            proximo();
+        };
+        reader.readAsDataURL(file);
     }
 
     function pularDocumento() {
         fotos[etapas[currentIdx].key] = "NÃO POSSUI";
-        currentIdx++; carregarEtapa();
+        proximo();
+    }
+
+    function proximo() { currentIdx++; carregarEtapa(); }
+
+    function editarEtapa(idx) {
+        currentIdx = idx;
+        document.getElementById("summarySection").classList.add("hidden");
+        document.getElementById("cameraSection").classList.remove("hidden");
+        carregarEtapa();
     }
 
     function mostrarResumo() {
         if(stream) stream.getTracks().forEach(t => t.stop());
         document.getElementById("cameraSection").classList.add("hidden");
         document.getElementById("summarySection").classList.remove("hidden");
-        document.getElementById("statusLabel").innerText = "Conferência";
-        document.getElementById("instructionLabel").innerText = "Verifique os itens abaixo";
+        document.getElementById("statusLabel").innerText = "Resumo dos Documentos";
+        document.getElementById("instructionLabel").innerText = "Confira a lista abaixo antes de enviar";
+        
         const list = document.getElementById("summaryList");
         list.innerHTML = "";
-        etapas.forEach(e => {
-            const status = fotos[e.key] === "NÃO POSSUI" ? '<span style="color:var(--amber)">PULADO</span>' : '<span style="color:var(--green)">OK</span>';
-            list.innerHTML += `<div class="summary-item"><span>${e.label}</span><b>${status}</b></div>`;
+        etapas.forEach((e, i) => {
+            const status = fotos[e.key] === "NÃO POSSUI" 
+                ? '<span style="color:var(--amber)">PULADO</span>' 
+                : '<span style="color:var(--green)">OK</span>';
+            list.innerHTML += `
+                <div class="summary-item">
+                    <span><b>${e.label}</b>: ${status}</span>
+                    <button class="btn-edit" onclick="editarEtapa(${i})">Alterar</button>
+                </div>`;
         });
     }
 
     async function enviarTudo() {
         const btn = document.getElementById("btnFinalizar");
         btn.disabled = true;
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Enviando ao RH...`;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Enviando...`;
         
-        const payload = {
+        const payload = JSON.stringify({
             dados: { nome: document.getElementById("nome").value, funcao: document.getElementById("funcao").value },
             fotos: fotos
-        };
+        });
 
         try {
-            // Usando mode: 'no-cors' para evitar erro de redirecionamento do Google
-            await fetch(scriptURL, { 
-                method: "POST", 
-                mode: "no-cors", 
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload) 
-            });
-            
-            // Como no-cors não dá resposta, assumimos sucesso se não cair no catch
-            document.getElementById("statusLabel").innerText = "Enviado!";
-            document.getElementById("instructionLabel").innerText = "Tudo certo. Boas vindas!";
-            btn.style.background = "var(--green)";
-            btn.innerHTML = `<i class="fas fa-check"></i> Recebido com Sucesso!`;
-            setTimeout(() => location.reload(), 4000);
-            
+            await fetch(scriptURL, { method: "POST", mode: "no-cors", body: payload });
+            setTimeout(() => {
+                document.getElementById("statusLabel").innerText = "Sucesso!";
+                btn.innerHTML = "Enviado com Sucesso!";
+                btn.style.background = "var(--green)";
+                alert("Documentos enviados com sucesso para a EFFICO!");
+            }, 2000);
         } catch (e) {
-            alert("Erro ao conectar com o servidor. Tente novamente.");
+            alert("Erro ao enviar. Tente novamente.");
             btn.disabled = false;
-            btn.innerHTML = "Tentar novamente";
+            btn.innerHTML = "Tentar Novamente";
         }
     }
 </script>

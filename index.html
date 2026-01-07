@@ -7,83 +7,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --blue: #0f2a44; 
-            --green: #27ae60; 
-            --amber: #f39c12;
-            --bg: #f8fafc;
-            --white: #ffffff; 
-        }
-
-        body { 
-            margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg); color: var(--blue);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; 
-        }
-        
-        .app { 
-            width: 100%; max-width: 420px; background: var(--white); 
-            border-radius: 30px; padding: 35px 25px; 
-            box-shadow: 0 15px 35px rgba(15, 42, 68, 0.1); text-align: center; 
-        }
-
+        :root { --blue: #0f2a44; --green: #27ae60; --amber: #f39c12; --bg: #f8fafc; --white: #ffffff; }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--blue); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; }
+        .app { width: 100%; max-width: 420px; background: var(--white); border-radius: 30px; padding: 35px 25px; box-shadow: 0 15px 35px rgba(15, 42, 68, 0.1); text-align: center; box-sizing: border-box; }
         .logo { width: 100px; margin-bottom: 20px; }
         h1 { font-size: 1.4rem; margin: 0 0 10px 0; font-weight: 800; }
         .subtitle { font-size: 0.9rem; color: #64748b; margin-bottom: 25px; }
-
-        /* Progresso */
         .progress-wrapper { margin-bottom: 25px; display: none; }
         .progress-info { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; }
         .progress-container { width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--blue); width: 0%; transition: width 0.4s ease; }
-
-        /* Card de Status */
-        .status-card { 
-            background: #f1f5f9; padding: 18px; border-radius: 20px; 
-            margin-bottom: 25px; border: 1px solid #e2e8f0;
-        }
+        .status-card { background: #f1f5f9; padding: 18px; border-radius: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
         #statusLabel { font-weight: 800; font-size: 1rem; display: block; }
         #instructionLabel { font-size: 0.85rem; color: #64748b; margin-top: 5px; }
-
-        /* Inputs */
-        input { 
-            width: 100%; padding: 15px; border: 2px solid #e2e8f0; 
-            border-radius: 15px; font-size: 1rem; margin-bottom: 12px; outline: none; box-sizing: border-box;
-        }
-
-        /* Câmera */
-        .camera-container { 
-            position: relative; width: 100%; aspect-ratio: 3/4; 
-            background: #000; border-radius: 25px; overflow: hidden; 
-            display: none; margin-bottom: 20px;
-        }
+        input { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 15px; font-size: 1rem; margin-bottom: 12px; outline: none; box-sizing: border-box; }
+        .camera-container { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 25px; overflow: hidden; display: none; margin-bottom: 20px; }
         video { width: 100%; height: 100%; object-fit: cover; }
-        .overlay { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            border: 2px solid #fff; z-index: 10; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); 
-        }
+        .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 2px solid #fff; z-index: 10; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); pointer-events: none; }
         .rect { width: 85%; height: 60%; border-radius: 15px; }
         .circle { width: 75%; height: 55%; border-radius: 50%; }
-
-        /* Lista de Resumo */
-        .summary-list { text-align: left; margin-top: 15px; max-height: 300px; overflow-y: auto; padding-right: 5px; }
-        .summary-item { 
-            display: flex; justify-content: space-between; padding: 12px; 
-            border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; 
-        }
-        .summary-item i { margin-right: 8px; }
-
-        /* Botões */
-        button { 
-            width: 100%; padding: 16px; border: none; border-radius: 16px; 
-            font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
+        .summary-list { text-align: left; margin-top: 15px; max-height: 250px; overflow-y: auto; border: 1px solid #eee; border-radius: 15px; padding: 10px; }
+        .summary-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 0.8rem; }
+        button { width: 100%; padding: 16px; border: none; border-radius: 16px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary { background: var(--blue); color: #fff; }
-        .btn-primary:active { transform: scale(0.98); }
         .btn-skip { background: transparent; color: #94a3b8; font-size: 0.8rem; margin-top: 10px; }
         .btn-reset { background: #fee2e2; color: #ef4444; margin-top: 10px; font-size: 0.85rem; }
-
         .hidden { display: none; }
         .mirror { transform: scaleX(-1); }
     </style>
@@ -93,26 +41,23 @@
 <div class="app">
     <img src="https://effico.com.br/wp-content/uploads/2022/06/Sem-Titulo-7123.png" class="logo">
     <h1 id="mainTitle">Admissão Digital</h1>
-    <p class="subtitle" id="mainSubtitle">Processo de envio de documentos</p>
+    <p class="subtitle" id="mainSubtitle">Envio seguro de documentos</p>
 
     <div class="progress-wrapper" id="progressWrapper">
-        <div class="progress-info">
-            <span>Progresso</span>
-            <span id="progressPercent">0%</span>
-        </div>
+        <div class="progress-info"><span>Progresso</span><span id="progressPercent">0%</span></div>
         <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
     </div>
 
     <div id="statusCard" class="status-card">
         <span id="statusLabel">Privacidade</span>
-        <span id="instructionLabel">Leia os termos da LGPD</span>
+        <span id="instructionLabel">Termos da LGPD</span>
     </div>
 
     <div id="lgpdSection">
-        <div style="font-size: 0.8rem; color: #475569; line-height: 1.5; text-align: left; background: #fffbeb; padding: 15px; border-radius: 15px; margin-bottom: 20px;">
-            A <b>EFFICO</b> solicita acesso à sua câmera para digitalizar os documentos necessários para sua contratação. Os dados são tratados com total sigilo.
+        <div style="font-size: 0.8rem; color: #475569; text-align: left; background: #fffbeb; padding: 15px; border-radius: 15px; margin-bottom: 20px; line-height: 1.4;">
+            Autorizo a <b>EFFICO</b> a coletar estas imagens para fins exclusivos de admissão e registro profissional.
         </div>
-        <button class="btn-primary" onclick="irParaCadastro()">Aceitar e Começar</button>
+        <button class="btn-primary" onclick="irParaCadastro()">Concordar e Iniciar</button>
     </div>
 
     <div id="setupSection" class="hidden">
@@ -132,36 +77,45 @@
 
     <div id="summarySection" class="hidden">
         <div class="summary-list" id="summaryList"></div>
-        <button class="btn-primary" style="margin-top: 20px;" onclick="enviarTudo()">
+        <button class="btn-primary" style="margin-top: 20px;" id="btnFinalizar" onclick="enviarTudo()">
             <i class="fas fa-paper-plane"></i> Confirmar e Enviar
         </button>
-        <button class="btn-reset" onclick="location.reload()">
-            <i class="fas fa-redo"></i> Refazer tudo
-        </button>
+        <button class="btn-reset" onclick="location.reload()">Refazer tudo</button>
     </div>
 </div>
 
 <script>
     const etapas = [
-        { label: "Foto Selfie", hint: "Rosto centralizado", key: "Selfie", isFace: true },
-        { label: "Carteira de Trabalho", hint: "Página da foto e dados", key: "CTPS", isFace: false },
-        { label: "CPF / RG", hint: "Documento aberto ou frente", key: "Documento_ID", isFace: false },
-        { label: "Comprovante Residência", hint: "Conta recente (luz/água)", key: "Endereco", isFace: false },
-        { label: "Título de Eleitor", hint: "Frente do documento", key: "Titulo", isFace: false },
-        { label: "Certificado Escolar", hint: "Diploma ou Declaração", key: "Escolaridade", isFace: false }
+        { label: "Foto Selfie", hint: "Centralize seu rosto", key: "Selfie", isFace: true },
+        { label: "CTPS", hint: "Página da foto e dados", key: "CTPS", isFace: false },
+        { label: "CPF", hint: "Documento original", key: "CPF", isFace: false },
+        { label: "RG", hint: "Frente e Verso", key: "RG", isFace: false },
+        { label: "PIS", hint: "Cartão Cidadão ou extrato", key: "PIS", isFace: false },
+        { label: "CNH", hint: "Cópia da CNH (se houver)", key: "CNH", isFace: false },
+        { label: "Reservista", hint: "Certificado militar", key: "Reservista", isFace: false },
+        { label: "Comprovante Endereço", hint: "Conta de luz/água recente", key: "Endereco", isFace: false },
+        { label: "Vale Transporte", hint: "Cartão ou formulário", key: "VT", isFace: false },
+        { label: "Certidão Civil", hint: "Nascimento ou Casamento", key: "Certidao_Civil", isFace: false },
+        { label: "CPF Cônjuge", hint: "Se aplicável", key: "CPF_Conjuge", isFace: false },
+        { label: "Doc Filhos", hint: "RG ou Nasc. dos filhos", key: "Doc_Filhos", isFace: false },
+        { label: "Vacina Filhos", hint: "Caderneta de vacinação", key: "Vacina_Filhos", isFace: false },
+        { label: "CPF Filhos", hint: "Se aplicável", key: "CPF_Filhos", isFace: false },
+        { label: "Vacina Saúde", hint: "Hepatite B / Tétano", key: "Vacina_Saude", isFace: false },
+        { label: "Vacina Covid", hint: "Comprovante de vacinação", key: "Vacina_Covid", isFace: false },
+        { label: "Conta Itaú", hint: "Cartão ou Extrato", key: "Conta_Itau", isFace: false },
+        { label: "Escolaridade", hint: "Diploma ou Declaração", key: "Escolaridade", isFace: false }
     ];
 
     let currentIdx = 0, fotos = {}, stream = null;
-    const video = document.getElementById("video");
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxI0-59MvZg71J47Qd2IauN9Cdbh0tQFULUcc70qvH-5Mgaz7BKi3urJC-ug-3K1ZGW5Q/exec";
 
     function irParaCadastro() {
         document.getElementById("lgpdSection").classList.add("hidden");
         document.getElementById("setupSection").classList.remove("hidden");
-        document.getElementById("statusLabel").innerText = "Seus Dados";
     }
 
     function iniciarCaptura() {
-        if(!document.getElementById("nome").value || !document.getElementById("funcao").value) return alert("Preencha todos os campos.");
+        if(!document.getElementById("nome").value || !document.getElementById("funcao").value) return alert("Preencha Nome e Função.");
         document.getElementById("setupSection").classList.add("hidden");
         document.getElementById("cameraSection").classList.remove("hidden");
         document.getElementById("progressWrapper").style.display = "block";
@@ -170,31 +124,30 @@
 
     async function carregarEtapa() {
         if (currentIdx >= etapas.length) return mostrarResumo();
-        
         const config = etapas[currentIdx];
         document.getElementById("statusLabel").innerText = config.label;
         document.getElementById("instructionLabel").innerText = config.hint;
-        
         const pct = Math.round((currentIdx / etapas.length) * 100);
         document.getElementById("progressBar").style.width = pct + "%";
         document.getElementById("progressPercent").innerText = pct + "%";
-
         document.getElementById("overlay").className = config.isFace ? "overlay circle" : "overlay rect";
-        video.classList.toggle("mirror", config.isFace);
-
+        document.getElementById("video").classList.toggle("mirror", config.isFace);
         if(stream) stream.getTracks().forEach(t => t.stop());
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: config.isFace ? "user" : "environment" } });
-        video.srcObject = stream;
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: config.isFace ? "user" : "environment" } });
+            document.getElementById("video").srcObject = stream;
+        } catch(e) { alert("Câmera não disponível."); }
     }
 
     function tirarFoto() {
+        const video = document.getElementById("video");
         const c = document.createElement("canvas");
-        const s = 1000 / Math.max(video.videoWidth, video.videoHeight);
+        const s = 800 / Math.max(video.videoWidth, video.videoHeight); // Reduzindo para 800px para garantir envio
         c.width = video.videoWidth * s; c.height = video.videoHeight * s;
         const ctx = c.getContext("2d");
         if (etapas[currentIdx].isFace) { ctx.translate(c.width, 0); ctx.scale(-1, 1); }
         ctx.drawImage(video, 0, 0, c.width, c.height);
-        fotos[etapas[currentIdx].key] = c.toDataURL("image/jpeg", 0.7);
+        fotos[etapas[currentIdx].key] = c.toDataURL("image/jpeg", 0.6); // Qualidade 0.6 para ser leve
         currentIdx++; carregarEtapa();
     }
 
@@ -207,23 +160,20 @@
         if(stream) stream.getTracks().forEach(t => t.stop());
         document.getElementById("cameraSection").classList.add("hidden");
         document.getElementById("summarySection").classList.remove("hidden");
-        document.getElementById("statusLabel").innerText = "Resumo do Envio";
-        document.getElementById("instructionLabel").innerText = "Confira se está tudo correto";
-        
+        document.getElementById("statusLabel").innerText = "Conferência";
+        document.getElementById("instructionLabel").innerText = "Verifique os itens abaixo";
         const list = document.getElementById("summaryList");
         list.innerHTML = "";
         etapas.forEach(e => {
-            const status = fotos[e.key] === "NÃO POSSUI" 
-                ? '<span style="color:var(--amber)"><i class="fas fa-exclamation-triangle"></i> Não possui</span>' 
-                : '<span style="color:var(--green)"><i class="fas fa-check-circle"></i> Capturado</span>';
-            list.innerHTML += `<div class="summary-item"><strong>${e.label}</strong> ${status}</div>`;
+            const status = fotos[e.key] === "NÃO POSSUI" ? '<span style="color:var(--amber)">PULADO</span>' : '<span style="color:var(--green)">OK</span>';
+            list.innerHTML += `<div class="summary-item"><span>${e.label}</span><b>${status}</b></div>`;
         });
     }
 
     async function enviarTudo() {
-        const btn = event.target;
+        const btn = document.getElementById("btnFinalizar");
         btn.disabled = true;
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Enviando...`;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Enviando ao RH...`;
         
         const payload = {
             dados: { nome: document.getElementById("nome").value, funcao: document.getElementById("funcao").value },
@@ -231,13 +181,25 @@
         };
 
         try {
-            // Substitua pela sua URL real do Google Apps Script
-            await fetch("https://script.google.com/macros/s/AKfycbxI0-59MvZg71J47Qd2IauN9Cdbh0tQFULUcc70qvH-5Mgaz7BKi3urJC-ug-3K1ZGW5Q/exec", { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-            alert("Documentos enviados! Bem-vindo(a) à EFFICO.");
-            location.reload();
+            // Usando mode: 'no-cors' para evitar erro de redirecionamento do Google
+            await fetch(scriptURL, { 
+                method: "POST", 
+                mode: "no-cors", 
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload) 
+            });
+            
+            // Como no-cors não dá resposta, assumimos sucesso se não cair no catch
+            document.getElementById("statusLabel").innerText = "Enviado!";
+            document.getElementById("instructionLabel").innerText = "Tudo certo. Boas vindas!";
+            btn.style.background = "var(--green)";
+            btn.innerHTML = `<i class="fas fa-check"></i> Recebido com Sucesso!`;
+            setTimeout(() => location.reload(), 4000);
+            
         } catch (e) {
-            alert("Erro na conexão. Tente novamente.");
+            alert("Erro ao conectar com o servidor. Tente novamente.");
             btn.disabled = false;
+            btn.innerHTML = "Tentar novamente";
         }
     }
 </script>

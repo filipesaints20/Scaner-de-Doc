@@ -9,66 +9,85 @@
     <style>
         :root { --blue: #0f2a44; --green: #6b8f71; --white: #ffffff; }
         body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(135deg, var(--blue), var(--green)); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; }
-        .app { width: 100%; max-width: 450px; background: rgba(255,255,255,0.98); border-radius: 28px; padding: 30px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); text-align: center; position: relative; }
+        
+        .app { width: 100%; max-width: 450px; background: rgba(255,255,255,0.98); border-radius: 28px; padding: 30px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); text-align: center; position: relative; overflow: hidden; }
         .logo { width: 110px; margin-bottom: 10px; }
         h1 { font-size: 1.3rem; color: var(--blue); margin-bottom: 20px; font-weight: 700; }
+
+        /* Barra de Progresso */
+        .progress-container { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 20px; display: none; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--green); width: 0%; transition: width 0.3s; }
+
         .status { background: #f0f4f8; padding: 15px; border-radius: 14px; font-size: 0.9rem; font-weight: 600; color: var(--blue); margin-bottom: 20px; border-left: 5px solid var(--blue); min-height: 50px; display: flex; align-items: center; justify-content: center; }
+
         .input-group { text-align: left; margin-bottom: 15px; }
         input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; box-sizing: border-box; outline: none; }
+        
         .lgpd-box { background: #fffbe6; border: 1px solid #ffe58f; padding: 15px; border-radius: 12px; font-size: 0.8rem; text-align: left; color: #856404; margin-bottom: 20px; line-height: 1.4; }
+
         .camera-container { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 20px; overflow: hidden; display: none; margin-bottom: 20px; }
         video { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Efeito de Flash */
+        .flash { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; z-index: 40; pointer-events: none; }
+        .flash-active { animation: flashAnim 0.3s; }
+        @keyframes flashAnim { 0% { opacity: 0.8; } 100% { opacity: 0; } }
+
         .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 3px solid #fff; z-index: 10; pointer-events: none; box-shadow: 0 0 0 1000px rgba(0,0,0,0.6); }
         .rect { width: 85%; height: 60%; border-radius: 15px; }
         .circle { width: 70%; height: 50%; border-radius: 50%; }
-        #btnAnexarOverlay { position: absolute; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--blue); color: white; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.4); z-index: 30; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; }
+
+        #btnAnexarOverlay { position: absolute; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--blue); color: white; border: 2px solid white; z-index: 30; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; }
+
         button { width: 100%; padding: 18px; border: none; border-radius: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
         .btn-primary { background: var(--blue); color: #fff; }
         .btn-skip { background: #f0f0f0; color: #666; font-size: 0.85rem; }
         .hidden { display: none; }
-
-        /* CORREÇÃO: mirror com 'r' no final */
         .mirror { transform: scaleX(-1); }
-
-        #blur-warning { position: absolute; bottom: 85px; left: 0; right: 0; color: #ffeb3b; font-size: 0.8rem; font-weight: bold; z-index: 25; display: none; text-shadow: 1px 1px 3px #000; }
     </style>
 </head>
 <body>
 
 <div class="app">
+    <div class="flash" id="flash"></div>
     <img src="https://effico.com.br/wp-content/uploads/2022/06/Sem-Titulo-7123.png" class="logo">
     <h1>RH Digital • Admissão</h1>
+
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
     <div id="status" class="status">Termos de Privacidade</div>
 
     <div id="lgpdSection">
         <div class="lgpd-box">
             <strong>Consentimento LGPD:</strong><br>
-            Ao prosseguir, você autoriza a <strong>EFFICO</strong> a coletar e tratar suas fotos e documentos para admissão, conforme a Lei 13.709/18.
+            A <strong>EFFICO</strong> utiliza seus dados apenas para fins de registro profissional. Ao clicar abaixo, você concorda com o tratamento seguro dessas informações.
         </div>
-        <button class="btn-primary" onclick="aceitarLGPD()">Li e Aceito os Termos</button>
+        <button class="btn-primary" onclick="aceitarLGPD()">Concordo e Iniciar</button>
     </div>
 
     <div id="setupSection" class="hidden">
         <div class="input-group"><input type="text" id="nome" placeholder="Nome Completo"></div>
         <div class="input-group"><input type="text" id="funcao" placeholder="Função"></div>
-        <button class="btn-primary" onclick="iniciarChecklist()">Iniciar Captura</button>
+        <button class="btn-primary" onclick="iniciarChecklist()">Configurar Câmera</button>
     </div>
 
     <div id="cameraBox" class="camera-container">
         <video id="video" autoplay playsinline></video>
         <div id="overlay" class="overlay rect"></div>
-        <div id="blur-warning">⚠️ IMAGEM EMBAÇADA</div>
-        <button id="btnAnexarOverlay" onclick="document.getElementById('fileInput').click()"><i class="fas fa-paperclip"></i></button>
+        <button id="btnAnexarOverlay" title="Anexar da Galeria" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-paperclip"></i>
+        </button>
     </div>
 
     <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="processarArquivo(event)">
-    <button id="btnAction" class="btn-primary hidden" onclick="tirarFoto()">Tirar Foto</button>
-    <button id="btnSkip" class="btn-skip hidden" onclick="pularDocumento()">Não possuo este documento</button>
-    <button id="btnEnviar" class="btn-primary hidden" onclick="enviarTudo()">Enviar para o RH</button>
-</div>
 
-<script>var exports = {};</script>
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <button id="btnAction" class="btn-primary hidden" onclick="tirarFoto()">Capturar Foto</button>
+    <button id="btnSkip" class="btn-skip hidden" onclick="pularDocumento()">Não possuo agora</button>
+    <button id="btnEnviar" class="btn-primary hidden" onclick="enviarTudo()">Finalizar e Enviar</button>
+</div>
 
 <script>
     const etapas = [
@@ -99,79 +118,134 @@
     function aceitarLGPD() {
         document.getElementById("lgpdSection").classList.add("hidden");
         document.getElementById("setupSection").classList.remove("hidden");
-        status.innerText = "Identifique-se";
+        status.innerText = "Informe seus dados";
     }
 
-    async function iniciarChecklist() {
-        if(!document.getElementById("nome").value || !document.getElementById("funcao").value) return alert("Preencha Nome e Função");
+    function iniciarChecklist() {
+        if(!document.getElementById("nome").value) return alert("Por favor, digite seu nome.");
         document.getElementById("setupSection").classList.add("hidden");
-        status.innerText = "Carregando Câmera...";
-        await faceapi.nets.tinyFaceDetector.loadFromUri("https://justadudewhohacks.github.io/face-api.js/models");
         document.getElementById("cameraBox").style.display = "block";
         document.getElementById("btnAction").classList.remove("hidden");
         document.getElementById("btnSkip").classList.remove("hidden");
+        document.getElementById("progressContainer").style.display = "block";
         carregarEtapa();
     }
 
     async function carregarEtapa() {
         if (currentIdx >= etapas.length) return concluir();
-        const config = etapas[currentIdx];
-        status.innerText = `(${currentIdx+1}/${etapas.length}) ${config.label}`;
-        document.getElementById("overlay").className = config.isFace ? "overlay circle" : "overlay rect";
         
-        // Ajuste de Espelhamento
+        const config = etapas[currentIdx];
+        status.innerText = config.label;
+        
+        // Atualiza Barra de Progresso
+        const pct = ((currentIdx) / etapas.length) * 100;
+        document.getElementById("progressBar").style.width = pct + "%";
+
+        document.getElementById("overlay").className = config.isFace ? "overlay circle" : "overlay rect";
         if (config.isFace) video.classList.add("mirror");
         else video.classList.remove("mirror");
 
         if(stream) stream.getTracks().forEach(t => t.stop());
-        stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: config.isFace ? "user" : "environment" } 
-        });
-        video.srcObject = stream;
+        
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: config.isFace ? "user" : "environment", width: 800 } 
+            });
+            video.srcObject = stream;
+        } catch (e) {
+            alert("Erro ao acessar câmera. Verifique as permissões.");
+        }
     }
 
     function tirarFoto() {
+        // Efeito visual de flash
+        const flash = document.getElementById("flash");
+        flash.classList.add("flash-active");
+        setTimeout(() => flash.classList.remove("flash-active"), 300);
+
         const c = document.createElement("canvas");
-        c.width = video.videoWidth; 
-        c.height = video.videoHeight;
+        // Redimensionamento para economia de dados (Max 1200px)
+        const scale = 1200 / Math.max(video.videoWidth, video.videoHeight);
+        c.width = video.videoWidth * scale; 
+        c.height = video.videoHeight * scale;
+        
         const ctx = c.getContext("2d");
         if (etapas[currentIdx].isFace) {
             ctx.translate(c.width, 0);
             ctx.scale(-1, 1);
         }
-        ctx.drawImage(video, 0, 0);
-        fotos[etapas[currentIdx].key] = c.toDataURL("image/jpeg", 0.7);
+        ctx.drawImage(video, 0, 0, c.width, c.height);
+        fotos[etapas[currentIdx].key] = c.toDataURL("image/jpeg", 0.6); // Qualidade 60% para e-mail
         proximo();
     }
 
     function processarArquivo(e) {
+        const file = e.target.files[0];
         const reader = new FileReader();
-        reader.onload = (f) => { fotos[etapas[currentIdx].key] = f.target.result; proximo(); };
-        reader.readAsDataURL(e.target.files[0]);
+        reader.onload = (f) => {
+            // Otimizar também arquivo carregado da galeria
+            const img = new Image();
+            img.onload = () => {
+                const c = document.createElement("canvas");
+                const scale = 1200 / Math.max(img.width, img.height);
+                c.width = img.width * scale; c.height = img.height * scale;
+                c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+                fotos[etapas[currentIdx].key] = c.toDataURL("image/jpeg", 0.6);
+                proximo();
+            };
+            img.src = f.target.result;
+        };
+        reader.readAsDataURL(file);
     }
 
-    function pularDocumento() { fotos[etapas[currentIdx].key] = "NÃO POSSUI"; proximo(); }
-    function proximo() { currentIdx++; carregarEtapa(); }
+    function pularDocumento() {
+        fotos[etapas[currentIdx].key] = "NÃO POSSUI";
+        proximo();
+    }
+
+    function proximo() {
+        currentIdx++;
+        carregarEtapa();
+    }
 
     function concluir() {
         if(stream) stream.getTracks().forEach(t => t.stop());
+        document.getElementById("progressBar").style.width = "100%";
         document.getElementById("cameraBox").style.display = "none";
         document.getElementById("btnAction").classList.add("hidden");
         document.getElementById("btnSkip").classList.add("hidden");
         document.getElementById("btnEnviar").classList.remove("hidden");
-        status.innerText = "Tudo pronto!";
+        status.innerText = "Tudo pronto! Clique abaixo para enviar.";
     }
 
     async function enviarTudo() {
-        status.innerText = "🚀 Enviando ao RH...";
+        const btn = document.getElementById("btnEnviar");
+        btn.disabled = true;
+        btn.innerText = "Enviando... aguarde";
+        status.innerText = "🚀 Enviando documentos ao RH...";
+
         const payload = {
-            dados: { nome: document.getElementById("nome").value, funcao: document.getElementById("funcao").value },
+            dados: { 
+                nome: document.getElementById("nome").value, 
+                funcao: document.getElementById("funcao").value 
+            },
             fotos: fotos
         };
-        // Use a sua URL do Apps Script aqui
-        await fetch("https://script.google.com/macros/s/AKfycbyiTLVWv8h18JflYCxBXKgcAod7ZNjz7rbiYMemcGfnmSTEhNZXc1nzpuw04-F4t4yd/exec", { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-        status.innerText = "✅ ENVIADO!";
-        alert("Documentos recebidos com sucesso!");
+
+        try {
+            const response = await fetch("https://script.google.com/macros/s/AKfycbyiTLVWv8h18JflYCxBXKgcAod7ZNjz7rbiYMemcGfnmSTEhNZXc1nzpuw04-F4t4yd/exec", { 
+                method: "POST", 
+                mode: "no-cors", 
+                body: JSON.stringify(payload) 
+            });
+            status.innerText = "✅ ENVIADO COM SUCESSO!";
+            alert("Obrigado! Seus documentos foram enviados para a EFFICO.");
+            location.reload(); 
+        } catch (error) {
+            btn.disabled = false;
+            btn.innerText = "Tentar enviar novamente";
+            status.innerText = "❌ Erro na conexão. Tente novamente.";
+        }
     }
 </script>
 </body>

@@ -9,326 +9,219 @@
     <style>
         :root { 
             --blue: #0f2a44; 
-            --green: #6b8f71; 
-            --accent: #3498db;
-            --bg: #f4f7f9;
+            --green: #27ae60; 
+            --amber: #f39c12;
+            --bg: #f8fafc;
             --white: #ffffff; 
         }
 
         body { 
-            margin: 0; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg);
-            color: var(--blue);
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            padding: 20px; 
+            margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); color: var(--blue);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; 
         }
         
-        /* Container Principal */
         .app { 
-            width: 100%; 
-            max-width: 420px; 
-            background: var(--white); 
-            border-radius: 32px; 
-            padding: 40px 30px; 
-            box-shadow: 0 20px 40px rgba(15, 42, 68, 0.08); 
-            text-align: center; 
-            position: relative;
-            border: 1px solid rgba(0,0,0,0.03);
+            width: 100%; max-width: 420px; background: var(--white); 
+            border-radius: 30px; padding: 35px 25px; 
+            box-shadow: 0 15px 35px rgba(15, 42, 68, 0.1); text-align: center; 
         }
 
-        .logo { width: 120px; margin-bottom: 24px; }
-        
-        h1 { 
-            font-size: 1.5rem; 
-            margin-bottom: 8px; 
-            font-weight: 800; 
-            letter-spacing: -0.5px;
-        }
+        .logo { width: 100px; margin-bottom: 20px; }
+        h1 { font-size: 1.4rem; margin: 0 0 10px 0; font-weight: 800; }
+        .subtitle { font-size: 0.9rem; color: #64748b; margin-bottom: 25px; }
 
-        p.subtitle {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 24px;
-        }
+        /* Progresso */
+        .progress-wrapper { margin-bottom: 25px; display: none; }
+        .progress-info { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; }
+        .progress-container { width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--blue); width: 0%; transition: width 0.4s ease; }
 
-        /* Barra de Progresso Estilizada */
-        .progress-wrapper {
-            margin-bottom: 30px;
-            display: none;
-        }
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--green);
-        }
-        .progress-container { 
-            width: 100%; 
-            height: 8px; 
-            background: #edf2f7; 
-            border-radius: 10px; 
-            overflow: hidden; 
-        }
-        .progress-bar { 
-            height: 100%; 
-            background: linear-gradient(90deg, var(--blue), var(--green)); 
-            width: 0%; 
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-
-        /* Status e Instruções */
+        /* Card de Status */
         .status-card { 
-            background: #f8fafc; 
-            padding: 20px; 
-            border-radius: 20px; 
-            font-size: 1rem; 
-            font-weight: 600; 
-            margin-bottom: 24px; 
-            border: 1px dashed #cbd5e1;
+            background: #f1f5f9; padding: 18px; border-radius: 20px; 
+            margin-bottom: 25px; border: 1px solid #e2e8f0;
         }
-
-        .instruction {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-top: 8px;
-            font-weight: 400;
-        }
+        #statusLabel { font-weight: 800; font-size: 1rem; display: block; }
+        #instructionLabel { font-size: 0.85rem; color: #64748b; margin-top: 5px; }
 
         /* Inputs */
         input { 
-            width: 100%; 
-            padding: 16px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 16px; 
-            font-size: 1rem; 
-            margin-bottom: 12px;
-            transition: all 0.3s;
-            outline: none;
+            width: 100%; padding: 15px; border: 2px solid #e2e8f0; 
+            border-radius: 15px; font-size: 1rem; margin-bottom: 12px; outline: none; box-sizing: border-box;
         }
-        input:focus { border-color: var(--blue); background: #fcfdfe; }
-        
+
         /* Câmera */
         .camera-container { 
-            position: relative; 
-            width: 100%; 
-            aspect-ratio: 3/4; 
-            background: #1a202c; 
-            border-radius: 24px; 
-            overflow: hidden; 
-            display: none; 
-            margin-bottom: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative; width: 100%; aspect-ratio: 3/4; 
+            background: #000; border-radius: 25px; overflow: hidden; 
+            display: none; margin-bottom: 20px;
         }
         video { width: 100%; height: 100%; object-fit: cover; }
-        
         .overlay { 
-            position: absolute; 
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%); 
-            border: 2px solid rgba(255,255,255,0.8); 
-            z-index: 10; 
-            box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            border: 2px solid #fff; z-index: 10; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); 
         }
-        .rect { width: 85%; height: 60%; border-radius: 20px; }
+        .rect { width: 85%; height: 60%; border-radius: 15px; }
         .circle { width: 75%; height: 55%; border-radius: 50%; }
+
+        /* Lista de Resumo */
+        .summary-list { text-align: left; margin-top: 15px; max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        .summary-item { 
+            display: flex; justify-content: space-between; padding: 12px; 
+            border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; 
+        }
+        .summary-item i { margin-right: 8px; }
 
         /* Botões */
         button { 
-            width: 100%; 
-            padding: 18px; 
-            border: none; 
-            border-radius: 18px; 
-            font-size: 1rem; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            width: 100%; padding: 16px; border: none; border-radius: 16px; 
+            font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .btn-primary { background: var(--blue); color: #fff; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15, 42, 68, 0.2); }
-        .btn-skip { background: transparent; color: #94a3b8; font-size: 0.85rem; margin-top: 15px; }
-        .btn-skip:hover { color: var(--blue); }
-
-        #btnAnexarOverlay { 
-            position: absolute; bottom: 20px; right: 20px; 
-            width: 56px; height: 56px; border-radius: 50%; 
-            background: var(--white); color: var(--blue); 
-            z-index: 30; box-shadow: 0 8px 20px rgba(0,0,0,0.3); 
-        }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-skip { background: transparent; color: #94a3b8; font-size: 0.8rem; margin-top: 10px; }
+        .btn-reset { background: #fee2e2; color: #ef4444; margin-top: 10px; font-size: 0.85rem; }
 
         .hidden { display: none; }
         .mirror { transform: scaleX(-1); }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        .loading-dot { animation: pulse 1s infinite; }
     </style>
 </head>
 <body>
 
 <div class="app">
     <img src="https://effico.com.br/wp-content/uploads/2022/06/Sem-Titulo-7123.png" class="logo">
-    <h1>Admissão Digital</h1>
-    <p class="subtitle" id="mainSubtitle">Siga os passos para o seu registro</p>
+    <h1 id="mainTitle">Admissão Digital</h1>
+    <p class="subtitle" id="mainSubtitle">Processo de envio de documentos</p>
 
     <div class="progress-wrapper" id="progressWrapper">
         <div class="progress-info">
-            <span id="progressText">Progresso</span>
+            <span>Progresso</span>
             <span id="progressPercent">0%</span>
         </div>
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
     </div>
 
     <div id="statusCard" class="status-card">
-        <div id="statusLabel">Termos de Uso</div>
-        <div id="instructionLabel" class="instruction">Leia com atenção os termos da LGPD</div>
+        <span id="statusLabel">Privacidade</span>
+        <span id="instructionLabel">Leia os termos da LGPD</span>
     </div>
 
     <div id="lgpdSection">
-        <div style="text-align: left; font-size: 0.8rem; line-height: 1.6; color: #475569; background: #fffbeb; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #fef3c7;">
-            <i class="fas fa-shield-alt" style="color: #d97706; margin-bottom: 10px;"></i><br>
-            A <strong>EFFICO</strong> preza pela sua privacidade. As fotos coletadas serão usadas exclusivamente para seu processo de contratação e registro no sistema de RH.
+        <div style="font-size: 0.8rem; color: #475569; line-height: 1.5; text-align: left; background: #fffbeb; padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+            A <b>EFFICO</b> solicita acesso à sua câmera para digitalizar os documentos necessários para sua contratação. Os dados são tratados com total sigilo.
         </div>
-        <button class="btn-primary" onclick="aceitarLGPD()">Concordo e Avançar</button>
+        <button class="btn-primary" onclick="irParaCadastro()">Aceitar e Começar</button>
     </div>
 
     <div id="setupSection" class="hidden">
-        <input type="text" id="nome" placeholder="Seu nome completo">
-        <input type="text" id="funcao" placeholder="Cargo pretendido">
-        <button class="btn-primary" onclick="iniciarChecklist()">
-            Próximo Passo <i class="fas fa-arrow-right"></i>
-        </button>
+        <input type="text" id="nome" placeholder="Nome Completo">
+        <input type="text" id="funcao" placeholder="Função">
+        <button class="btn-primary" onclick="iniciarCaptura()">Próximo <i class="fas fa-chevron-right"></i></button>
     </div>
 
-    <div id="cameraBox" class="camera-container">
-        <video id="video" autoplay playsinline></video>
-        <div id="overlay" class="overlay rect"></div>
-        <button id="btnAnexarOverlay" onclick="document.getElementById('fileInput').click()">
-            <i class="fas fa-paperclip"></i>
-        </button>
+    <div id="cameraSection" class="hidden">
+        <div class="camera-container" id="cameraBox" style="display: block;">
+            <video id="video" autoplay playsinline></video>
+            <div id="overlay" class="overlay rect"></div>
+        </div>
+        <button class="btn-primary" onclick="tirarFoto()"><i class="fas fa-camera"></i> Capturar</button>
+        <button class="btn-skip" onclick="pularDocumento()">Não possuo este documento</button>
     </div>
 
-    <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="processarArquivo(event)">
-
-    <button id="btnAction" class="btn-primary hidden" onclick="tirarFoto()">
-        <i class="fas fa-camera"></i> Capturar Foto
-    </button>
-    <button id="btnSkip" class="btn-skip hidden" onclick="pularDocumento()">
-        Não possuo este documento no momento
-    </button>
-    
-    <button id="btnEnviar" class="btn-primary hidden" onclick="enviarTudo()">
-        Enviar Documentação <i class="fas fa-paper-plane"></i>
-    </button>
+    <div id="summarySection" class="hidden">
+        <div class="summary-list" id="summaryList"></div>
+        <button class="btn-primary" style="margin-top: 20px;" onclick="enviarTudo()">
+            <i class="fas fa-paper-plane"></i> Confirmar e Enviar
+        </button>
+        <button class="btn-reset" onclick="location.reload()">
+            <i class="fas fa-redo"></i> Refazer tudo
+        </button>
+    </div>
 </div>
 
 <script>
     const etapas = [
-        { label: "Foto Selfie", hint: "Enquadre seu rosto no círculo", key: "Selfie", isFace: true },
-        { label: "CTPS", hint: "Foto da página com sua foto e dados", key: "CTPS", isFace: false },
-        { label: "CPF", hint: "Documento original ou digital", key: "CPF_Doc", isFace: false },
-        { label: "RG", hint: "Frente e verso visíveis", key: "RG_Doc", isFace: false },
-        { label: "Comprovante de Residência", hint: "Contas de luz, água ou telefone", key: "Endereco", isFace: false },
-        { label: "Escolaridade", hint: "Certificado ou declaração", key: "Escolaridade", isFace: false }
-        // ... adicione as outras conforme necessário
+        { label: "Foto Selfie", hint: "Rosto centralizado", key: "Selfie", isFace: true },
+        { label: "Carteira de Trabalho", hint: "Página da foto e dados", key: "CTPS", isFace: false },
+        { label: "CPF / RG", hint: "Documento aberto ou frente", key: "Documento_ID", isFace: false },
+        { label: "Comprovante Residência", hint: "Conta recente (luz/água)", key: "Endereco", isFace: false },
+        { label: "Título de Eleitor", hint: "Frente do documento", key: "Titulo", isFace: false },
+        { label: "Certificado Escolar", hint: "Diploma ou Declaração", key: "Escolaridade", isFace: false }
     ];
 
     let currentIdx = 0, fotos = {}, stream = null;
     const video = document.getElementById("video");
-    const statusLabel = document.getElementById("statusLabel");
-    const instructionLabel = document.getElementById("instructionLabel");
 
-    function aceitarLGPD() {
+    function irParaCadastro() {
         document.getElementById("lgpdSection").classList.add("hidden");
         document.getElementById("setupSection").classList.remove("hidden");
-        statusLabel.innerText = "Identificação";
-        instructionLabel.innerText = "Informe seus dados básicos";
+        document.getElementById("statusLabel").innerText = "Seus Dados";
     }
 
-    function iniciarChecklist() {
-        if(!document.getElementById("nome").value) return alert("Por favor, informe seu nome.");
+    function iniciarCaptura() {
+        if(!document.getElementById("nome").value || !document.getElementById("funcao").value) return alert("Preencha todos os campos.");
         document.getElementById("setupSection").classList.add("hidden");
-        document.getElementById("cameraBox").style.display = "block";
-        document.getElementById("btnAction").classList.remove("hidden");
-        document.getElementById("btnSkip").classList.remove("hidden");
+        document.getElementById("cameraSection").classList.remove("hidden");
         document.getElementById("progressWrapper").style.display = "block";
         carregarEtapa();
     }
 
     async function carregarEtapa() {
-        if (currentIdx >= etapas.length) return concluir();
+        if (currentIdx >= etapas.length) return mostrarResumo();
         
         const config = etapas[currentIdx];
-        statusLabel.innerText = config.label;
-        instructionLabel.innerText = config.hint;
+        document.getElementById("statusLabel").innerText = config.label;
+        document.getElementById("instructionLabel").innerText = config.hint;
         
         const pct = Math.round((currentIdx / etapas.length) * 100);
         document.getElementById("progressBar").style.width = pct + "%";
         document.getElementById("progressPercent").innerText = pct + "%";
 
         document.getElementById("overlay").className = config.isFace ? "overlay circle" : "overlay rect";
-        if (config.isFace) video.classList.add("mirror");
-        else video.classList.remove("mirror");
+        video.classList.toggle("mirror", config.isFace);
 
         if(stream) stream.getTracks().forEach(t => t.stop());
-        stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: config.isFace ? "user" : "environment" } 
-        });
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: config.isFace ? "user" : "environment" } });
         video.srcObject = stream;
     }
 
     function tirarFoto() {
         const c = document.createElement("canvas");
-        const scale = 1000 / Math.max(video.videoWidth, video.videoHeight);
-        c.width = video.videoWidth * scale; c.height = video.videoHeight * scale;
+        const s = 1000 / Math.max(video.videoWidth, video.videoHeight);
+        c.width = video.videoWidth * s; c.height = video.videoHeight * s;
         const ctx = c.getContext("2d");
         if (etapas[currentIdx].isFace) { ctx.translate(c.width, 0); ctx.scale(-1, 1); }
         ctx.drawImage(video, 0, 0, c.width, c.height);
         fotos[etapas[currentIdx].key] = c.toDataURL("image/jpeg", 0.7);
-        proximo();
-    }
-
-    function processarArquivo(e) {
-        const reader = new FileReader();
-        reader.onload = (f) => { fotos[etapas[currentIdx].key] = f.target.result; proximo(); };
-        reader.readAsDataURL(e.target.files[0]);
+        currentIdx++; carregarEtapa();
     }
 
     function pularDocumento() {
         fotos[etapas[currentIdx].key] = "NÃO POSSUI";
-        proximo();
+        currentIdx++; carregarEtapa();
     }
 
-    function proximo() { currentIdx++; carregarEtapa(); }
-
-    function concluir() {
+    function mostrarResumo() {
         if(stream) stream.getTracks().forEach(t => t.stop());
-        document.getElementById("cameraBox").style.display = "none";
-        document.getElementById("btnAction").classList.add("hidden");
-        document.getElementById("btnSkip").classList.add("hidden");
-        document.getElementById("btnEnviar").classList.remove("hidden");
-        document.getElementById("progressBar").style.width = "100%";
-        document.getElementById("progressPercent").innerText = "100%";
-        statusLabel.innerText = "Concluído!";
-        instructionLabel.innerText = "Revise e envie seus documentos";
+        document.getElementById("cameraSection").classList.add("hidden");
+        document.getElementById("summarySection").classList.remove("hidden");
+        document.getElementById("statusLabel").innerText = "Resumo do Envio";
+        document.getElementById("instructionLabel").innerText = "Confira se está tudo correto";
+        
+        const list = document.getElementById("summaryList");
+        list.innerHTML = "";
+        etapas.forEach(e => {
+            const status = fotos[e.key] === "NÃO POSSUI" 
+                ? '<span style="color:var(--amber)"><i class="fas fa-exclamation-triangle"></i> Não possui</span>' 
+                : '<span style="color:var(--green)"><i class="fas fa-check-circle"></i> Capturado</span>';
+            list.innerHTML += `<div class="summary-item"><strong>${e.label}</strong> ${status}</div>`;
+        });
     }
 
     async function enviarTudo() {
-        const btn = document.getElementById("btnEnviar");
+        const btn = event.target;
         btn.disabled = true;
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Enviando...`;
         
@@ -338,14 +231,13 @@
         };
 
         try {
-            await fetch("SUA_URL_DO_APPS_SCRIPT", { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-            statusLabel.innerText = "Sucesso!";
-            instructionLabel.innerText = "Seus documentos foram enviados ao RH.";
-            btn.innerHTML = `<i class="fas fa-check"></i> Enviado!`;
-            btn.style.background = "var(--green)";
+            // Substitua pela sua URL real do Google Apps Script
+            await fetch("https://script.google.com/macros/s/AKfycbxI0-59MvZg71J47Qd2IauN9Cdbh0tQFULUcc70qvH-5Mgaz7BKi3urJC-ug-3K1ZGW5Q/exec", { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+            alert("Documentos enviados! Bem-vindo(a) à EFFICO.");
+            location.reload();
         } catch (e) {
+            alert("Erro na conexão. Tente novamente.");
             btn.disabled = false;
-            btn.innerText = "Erro ao enviar. Tentar novamente";
         }
     }
 </script>

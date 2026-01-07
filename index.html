@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RH Digital • EFFICO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --blue: #0f2a44; --green: #6b8f71; --white: #ffffff; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(135deg, var(--blue), var(--green)); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; }
+        .app { width: 100%; max-width: 450px; background: rgba(255,255,255,0.98); border-radius: 28px; padding: 30px; box-shadow: 0 25px 60px rgba(0,0,0,0.4); text-align: center; position: relative; }
+        .logo { width: 110px; margin-bottom: 10px; }
+        h1 { font-size: 1.3rem; color: var(--blue); margin-bottom: 20px; font-weight: 700; }
+        .status { background: #f0f4f8; padding: 15px; border-radius: 14px; font-size: 0.9rem; font-weight: 600; color: var(--blue); margin-bottom: 20px; border-left: 5px solid var(--blue); min-height: 50px; display: flex; align-items: center; justify-content: center; }
+        .input-group { text-align: left; margin-bottom: 15px; }
+        input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; box-sizing: border-box; outline: none; }
+        .lgpd-box { background: #fffbe6; border: 1px solid #ffe58f; padding: 15px; border-radius: 12px; font-size: 0.8rem; text-align: left; color: #856404; margin-bottom: 20px; line-height: 1.4; }
+        .camera-container { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 20px; overflow: hidden; display: none; margin-bottom: 20px; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 3px solid #fff; z-index: 10; pointer-events: none; box-shadow: 0 0 0 1000px rgba(0,0,0,0.6); }
+        .rect { width: 85%; height: 60%; border-radius: 15px; }
+        .circle { width: 70%; height: 50%; border-radius: 50%; }
+        #btnAnexarOverlay { position: absolute; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--blue); color: white; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.4); z-index: 30; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; }
+        button { width: 100%; padding: 18px; border: none; border-radius: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-primary { background: var(--blue); color: #fff; }
+        .btn-skip { background: #f0f0f0; color: #666; font-size: 0.85rem; }
+        .hidden { display: none; }
+
+        /* CORREÇÃO: mirror com 'r' no final */
+        .mirror { transform: scaleX(-1); }
+
+        #blur-warning { position: absolute; bottom: 85px; left: 0; right: 0; color: #ffeb3b; font-size: 0.8rem; font-weight: bold; z-index: 25; display: none; text-shadow: 1px 1px 3px #000; }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <img src="https://effico.com.br/wp-content/uploads/2022/06/Sem-Titulo-7123.png" class="logo">
+    <h1>RH Digital • Admissão</h1>
+    <div id="status" class="status">Termos de Privacidade</div>
+
+    <div id="lgpdSection">
+        <div class="lgpd-box">
+            <strong>Consentimento LGPD:</strong><br>
+            Ao prosseguir, você autoriza a <strong>EFFICO</strong> a coletar e tratar suas fotos e documentos para admissão, conforme a Lei 13.709/18.
+        </div>
+        <button class="btn-primary" onclick="aceitarLGPD()">Li e Aceito os Termos</button>
+    </div>
+
+    <div id="setupSection" class="hidden">
+        <div class="input-group"><input type="text" id="nome" placeholder="Nome Completo"></div>
+        <div class="input-group"><input type="text" id="funcao" placeholder="Função"></div>
+        <button class="btn-primary" onclick="iniciarChecklist()">Iniciar Captura</button>
+    </div>
+
+    <div id="cameraBox" class="camera-container">
+        <video id="video" autoplay playsinline></video>
+        <div id="overlay" class="overlay rect"></div>
+        <div id="blur-warning">⚠️ IMAGEM EMBAÇADA</div>
+        <button id="btnAnexarOverlay" onclick="document.getElementById('fileInput').click()"><i class="fas fa-paperclip"></i></button>
+    </div>
+
+    <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="processarArquivo(event)">
+    <button id="btnAction" class="btn-primary hidden" onclick="tirarFoto()">Tirar Foto</button>
+    <button id="btnSkip" class="btn-skip hidden" onclick="pularDocumento()">Não possuo este documento</button>
+    <button id="btnEnviar" class="btn-primary hidden" onclick="enviarTudo()">Enviar para o RH</button>
+</div>
+
+<script>var exports = {};</script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+<script>
+    const etapas = [
+        { label: "Selfie para Crachá", key: "Selfie", isFace: true },
+        { label: "CTPS", key: "CTPS", isFace: false },
+        { label: "CPF", key: "CPF_Doc", isFace: false },
+        { label: "RG", key: "RG_Doc", isFace: false },
+        { label: "PIS / Cartão Cidadão", key: "PIS", isFace: false },
+        { label: "CNH", key: "CNH", isFace: false },
+        { label: "Reservista", key: "Reservista", isFace: false },
+        { label: "Comprovante de Endereço", key: "Endereco", isFace: false },
+        { label: "Vale Transporte", key: "Vale_Transporte", isFace: false },
+        { label: "Certidão Casamento/Nasc.", key: "Certidao_Civil", isFace: false },
+        { label: "CPF do Cônjuge", key: "CPF_Conjuge", isFace: false },
+        { label: "RG/Nasc. dos Filhos", key: "Doc_Filhos", isFace: false },
+        { label: "Vacina dos Filhos", key: "Vacina_Filhos", isFace: false },
+        { label: "CPF dos Filhos", key: "CPF_Filhos", isFace: false },
+        { label: "Vacina Hepatite B/Tétano", key: "Vacina_Saude", isFace: false },
+        { label: "Vacina Covid", key: "Vacina_Covid", isFace: false },
+        { label: "Conta Itaú", key: "Conta_Itau", isFace: false },
+        { label: "Escolaridade", key: "Escolaridade", isFace: false }
+    ];
+
+    let currentIdx = 0, fotos = {}, stream = null;
+    const video = document.getElementById("video");
+    const status = document.getElementById("status");
+
+    function aceitarLGPD() {
+        document.getElementById("lgpdSection").classList.add("hidden");
+        document.getElementById("setupSection").classList.remove("hidden");
+        status.innerText = "Identifique-se";
+    }
+
+    async function iniciarChecklist() {
+        if(!document.getElementById("nome").value || !document.getElementById("funcao").value) return alert("Preencha Nome e Função");
+        document.getElementById("setupSection").classList.add("hidden");
+        status.innerText = "Carregando Câmera...";
+        await faceapi.nets.tinyFaceDetector.loadFromUri("https://justadudewhohacks.github.io/face-api.js/models");
+        document.getElementById("cameraBox").style.display = "block";
+        document.getElementById("btnAction").classList.remove("hidden");
+        document.getElementById("btnSkip").classList.remove("hidden");
+        carregarEtapa();
+    }
+
+    async function carregarEtapa() {
+        if (currentIdx >= etapas.length) return concluir();
+        const config = etapas[currentIdx];
+        status.innerText = `(${currentIdx+1}/${etapas.length}) ${config.label}`;
+        document.getElementById("overlay").className = config.isFace ? "overlay circle" : "overlay rect";
+        
+        // Ajuste de Espelhamento
+        if (config.isFace) video.classList.add("mirror");
+        else video.classList.remove("mirror");
+
+        if(stream) stream.getTracks().forEach(t => t.stop());
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: config.isFace ? "user" : "environment" } 
+        });
+        video.srcObject = stream;
+    }
+
+    function tirarFoto() {
+        const c = document.createElement("canvas");
+        c.width = video.videoWidth; 
+        c.height = video.videoHeight;
+        const ctx = c.getContext("2d");
+        if (etapas[currentIdx].isFace) {
+            ctx.translate(c.width, 0);
+            ctx.scale(-1, 1);
+        }
+        ctx.drawImage(video, 0, 0);
+        fotos[etapas[currentIdx].key] = c.toDataURL("image/jpeg", 0.7);
+        proximo();
+    }
+
+    function processarArquivo(e) {
+        const reader = new FileReader();
+        reader.onload = (f) => { fotos[etapas[currentIdx].key] = f.target.result; proximo(); };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+    function pularDocumento() { fotos[etapas[currentIdx].key] = "NÃO POSSUI"; proximo(); }
+    function proximo() { currentIdx++; carregarEtapa(); }
+
+    function concluir() {
+        if(stream) stream.getTracks().forEach(t => t.stop());
+        document.getElementById("cameraBox").style.display = "none";
+        document.getElementById("btnAction").classList.add("hidden");
+        document.getElementById("btnSkip").classList.add("hidden");
+        document.getElementById("btnEnviar").classList.remove("hidden");
+        status.innerText = "Tudo pronto!";
+    }
+
+    async function enviarTudo() {
+        status.innerText = "🚀 Enviando ao RH...";
+        const payload = {
+            dados: { nome: document.getElementById("nome").value, funcao: document.getElementById("funcao").value },
+            fotos: fotos
+        };
+        // Use a sua URL do Apps Script aqui
+        await fetch("https://script.google.com/macros/s/AKfycbyiTLVWv8h18JflYCxBXKgcAod7ZNjz7rbiYMemcGfnmSTEhNZXc1nzpuw04-F4t4yd/exec", { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+        status.innerText = "✅ ENVIADO!";
+        alert("Documentos recebidos com sucesso!");
+    }
+</script>
+</body>
+</html>
